@@ -56,8 +56,8 @@ class Fuliba(object):
                     Image(
                         f"Fuliba - {post_id} - {name}",
                         file_url,
-                        width=width,
-                        height=height,
+                        width=int(width),
+                        height=int(height),
                     )
                 )
         return imgs
