@@ -126,7 +126,9 @@ class NazurinBot(Bot):
                 self.sendIllust(illust, message, config.GALLERY_ID))
 
         # Skip storage if the site is in exclude list
-        if not (result['site'] in config.STORAGE_EXCLUDE_SITES):
+        if result['site'] in config.STORAGE_EXCLUDE_SITES:
+            logger.info('Found site=%s in the exclude list, skip storage process', result['site'])
+        else:
             download = asyncio.create_task(illust.download())
             await asyncio.gather(save, download)
             await self.storage.store(illust)
