@@ -21,6 +21,8 @@ PORT = env.int('PORT', default=80)
 
 STORAGE = env.list('STORAGE', subcast=str, default=['Local'])
 STORAGE_DIR = env.str('STORAGE_DIR', default='Pictures')
+# Exclude list of sites to skip storage
+STORAGE_EXCLUDE_SITES = env.list('STORAGE_EXCLUDE_SITES', default=[])
 
 DATABASE = env.str('DATABASE', default='Local')
 # Nazurin data collection in database
