@@ -1,0 +1,2 @@
+PRIORITY = 15
+COLLECTIONS = "fuliba"
