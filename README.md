@@ -37,6 +37,7 @@ English | [中文](https://blog.gpx.moe/2020/07/20/nazurin/)
 |     Wallhaven     |     <https://wallhaven.cc/>    |          |      ✔     |
 | Bilibili Dynamics |    <https://t.bilibili.com/>   |          |      ✔     |
 |       Weibo       |      <https://weibo.com/>      |          |      ✔     |
+|     Instagram     |  <https://www.instagram.com/>  |          |      ✔     |
 
 ### Supported Databases
 
