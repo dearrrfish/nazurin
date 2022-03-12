@@ -47,3 +47,6 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
 # Local directory to store database and temporary files
 DATA_DIR = 'data'
 TEMP_DIR = path.join(DATA_DIR, 'temp')
+
+# Disable forward original message, always send new one
+DISABLE_FORWARD_MESSAGE = env.bool('DISABLE_FORWARD_MESSAGE', default=False)

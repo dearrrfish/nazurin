@@ -15,6 +15,8 @@ from nazurin.utils.decorators import retry_after
 from nazurin.utils.exceptions import NazurinError
 from nazurin.utils.helpers import handleBadRequest, sanitizeCaption
 
+from nazurin.config import DISABLE_FORWARD_MESSAGE
+
 class NazurinBot(Bot):
     send_message = retry_after(Bot.send_message)
 
@@ -114,8 +116,7 @@ class NazurinBot(Bot):
         # Send / Forward to gallery & Save to album
         # If there're multiple images, then send a new message instead of
         # forwarding an existing one, since we currently can't forward albums correctly.
-        if message and message.is_forward(
-        ) and not illust.has_multiple_images():
+        if message and message.is_forward() and not illust.has_multiple_images() and not DISABLE_FORWARD_MESSAGE:
             save = asyncio.create_task(message.forward(config.GALLERY_ID))
         elif not illust.has_image():
             save = asyncio.create_task(
