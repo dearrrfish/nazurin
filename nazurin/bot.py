@@ -42,6 +42,43 @@ class NazurinBot(Bot):
                                     media,
                                     reply_to_message_id=reply_to)
 
+    @retry_after
+    async def uploadSingleGroup(self,
+                              imgs: List[Image],
+                              caption: str,
+                              chat_id: int,
+                              reply_to: Optional[int] = None):
+        await self.send_chat_action(chat_id, ChatActions.UPLOAD_PHOTO)
+        media = list()
+        images = list()
+        for img in imgs:
+            display_url = await img.display_url()
+            if display_url != img.url:
+                img = Image(
+                    name=f"[display] {img.name}",
+                    url=display_url,
+                )
+            images.append(img)
+        illust = Illust(
+            images=images,
+            caption=caption,
+        )
+        download = asyncio.create_task(illust.download())
+        await asyncio.gather(download)
+
+        for img in illust.images:
+            file_exists = await img.exists()
+            logger.info('img: url=`%s`, file=`%s`, exists=%s', img.url, img.path, file_exists)
+            if file_exists:
+                media.append(InputMediaPhoto(InputFile(img.path)))
+            else:
+                logger.info('failed to download img: url=`%s`', img.url)
+
+        media[0].caption = caption
+        await self.send_media_group(chat_id,
+                                    media,
+                                    reply_to_message_id=reply_to)
+
     async def sendPhotos(self,
                          illust: Illust,
                          chat_id: int,
@@ -57,7 +94,15 @@ class NazurinBot(Bot):
             imgs = imgs[10:]
 
         for group in groups:
-            await self.sendSingleGroup(group, caption, chat_id, reply_to)
+            try:
+                await self.sendSingleGroup(group, caption, chat_id, reply_to)
+            except BadRequest as error:
+                if 'Group send failed' in str(error):
+                    logger.error('BadRequest exception: %s', error)
+                    logger.info('Retry send photo group through attachements...')
+                    await self.uploadSingleGroup(group, caption, chat_id, reply_to)
+                else:
+                    raise error
 
     async def sendIllust(self,
                          illust: Illust,
